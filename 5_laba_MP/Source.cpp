@@ -55,8 +55,10 @@ public:
 		int post_y;
 		int post_m;
 		int post_d;
-		if (y >= ref.y) {
+		//y >= ref.y
+		if (y > ref.y) {
 			post_y = y - ref.y;
+
 			if (m > ref.m) {
 				post_m = m - ref.m;
 				if (d > ref.d) { post_d = d - ref.d; }
@@ -148,7 +150,7 @@ public:
 			}
 			else {
 				post_m = 12 - m + ref.m; post_y--;
-				if (d < ref.d) { post_d = ref.d - d; }
+				if (d <= ref.d) { post_d = ref.d - d; }
 				else {
 					if (check_v(y)) {
 						if ((m == 1) || (m == 3) || (m == 5) || (m == 7) || (m == 8) || (m == 10) || (m == 12))
@@ -235,12 +237,11 @@ ofstream& operator << (ofstream& out, Event& ref) {
 	return out;
 }
 ofstream& operator << (ofstream& out, date& ref) {
-	out << ref.d << '.' << ref.m << '.' << ref.y << endl;
+	out << ref.d << " days " << ref.m << " monthes " << ref.y << " years " << endl;
 	return out;
 }
 ostream& operator << (ostream& out, date& ref) {
-	out << ref.d << '.' << ref.m << '.' << ref.y << endl;
-	return out;
+	out << ref.d << " days " << ref.m << " monthes " << ref.y << " years " << endl;	return out;
 }
 istream& operator>> (istream& in, Event& ref) {     //Перегрузка оператора ввода с консоли
 	string s1, s2;
@@ -535,7 +536,7 @@ void users_guide()
 	cout << "Now you will see a app for calculating difference in two dates" << endl << endl;
 	cout << "If you'd like to enter dates from a text file - enter information by this way: " << endl;
 	cout << "Event	year	month	day" << endl;
-	cout << "(Example: \t birthday 2004.12.21  now 2022.11.21)" << endl;
+	cout << "(Example: \n birthday 2004.12.21  now 2022.01.21)" << endl;
 	cout << "If you want to enter dates from console - you'll see guide later" << endl << endl;
 }
 
@@ -634,7 +635,8 @@ vector<date> file_result()
 	vector<Event> vec = file_input();
 	vector<date> res;
 	date d;
-	for (int i = 0; i < res.size(); i++)
+	cout << endl;
+	for (int i = 0; i < vec.size(); i++)
 	{
 		d = calc(vec[i]);
 		res.push_back(d);
@@ -693,22 +695,29 @@ int main()
 		vector<date> result;
 		if (entering_way()) 
 		{ 
-			system("cls");
 			result = console_result();
+			bool output = entering_output_way();
+			if (output)
+			{
+				console_output(result);
+			}
+			else
+			{
+				file_output(result);
+			}
 		}
 		else 
 		{
-			system("cls");
-			result = file_result(); 
-		}
-		bool output = entering_output_way();
-		if (output) 
-		{
-			console_output(result);
-		}
-		else
-		{
-			file_output(result);
+			result = file_result();
+			bool output = entering_output_way();
+			if (output)
+			{
+				console_output(result);
+			}
+			else
+			{
+				file_output(result);
+			}
 		}
 		result.clear();
 		iteration = continue_check();
